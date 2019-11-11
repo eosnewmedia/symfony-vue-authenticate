@@ -1,0 +1,27 @@
+{
+  "name": "eos/vue-authenticate-bundle",
+  "description": "Symfony Bundle as backend component for dgrubelic/vue-authenticate",
+  "type": "symfony-bundle",
+  "require": {
+    "php": ">=7.2",
+    "symfony/framework-bundle": "^4.0",
+    "psr/http-factory": "^1.0",
+    "psr/http-message": "^1.0",
+    "psr/http-client": "^1.0",
+    "mastercard/oauth1-signer": "^1.1",
+    "abraham/twitteroauth": "^1.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Eos\\Bundle\\VueAuthenticate\\": "src"
+    }
+  },
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Philipp Marien",
+      "email": "marien@eosnewmedia.de"
+    }
+  ],
+  "minimum-stability": "stable"
+}

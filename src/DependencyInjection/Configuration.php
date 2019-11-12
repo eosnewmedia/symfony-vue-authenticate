@@ -20,6 +20,7 @@ class Configuration implements ConfigurationInterface
         $root = $treeBuilder->getRootNode()->children();
 
         $twitter = $root->arrayNode('twitter')
+            ->defaultNull()
             ->treatNullLike([])
             ->children();
         $twitter->scalarNode('key')->isRequired();

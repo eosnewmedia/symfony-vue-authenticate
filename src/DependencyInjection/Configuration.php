@@ -19,12 +19,9 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder('eos_vue_authenticate');
         $root = $treeBuilder->getRootNode()->children();
 
-        $twitter = $root->arrayNode('twitter')
-            ->defaultNull()
-            ->treatNullLike([])
-            ->children();
-        $twitter->scalarNode('key')->isRequired();
-        $twitter->scalarNode('secret')->isRequired();
+        $twitter = $root->arrayNode('twitter')->children();
+        $twitter->scalarNode('key')->defaultNull();
+        $twitter->scalarNode('secret')->defaultNull();
 
         return $treeBuilder;
     }

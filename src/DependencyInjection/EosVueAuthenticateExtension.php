@@ -19,7 +19,7 @@ class EosVueAuthenticateExtension extends ConfigurableExtension
      */
     protected function loadInternal(array $mergedConfig, ContainerBuilder $container): void
     {
-        if (count($mergedConfig['twitter']) > 0) {
+        if ($mergedConfig['twitter']['key'] && $mergedConfig['twitter']['secret']) {
             $container->autowire(TwitterOAuth::class)
                 ->addArgument($mergedConfig['twitter']['key'])
                 ->addArgument($mergedConfig['twitter']['secret'])

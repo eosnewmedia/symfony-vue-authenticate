@@ -15,7 +15,7 @@ use Throwable;
 /**
  * @author Philipp Marien <marien@eosnewmedia.de>
  */
-class TwitterController
+class TwitterController extends AbstractAuthenticationController
 {
     /**
      * @var TwitterOAuth
@@ -23,18 +23,13 @@ class TwitterController
     private $twitter;
 
     /**
-     * @var EventDispatcherInterface
-     */
-    private $eventDispatcher;
-
-    /**
-     * @param TwitterOAuth $twitter
      * @param EventDispatcherInterface $eventDispatcher
+     * @param TwitterOAuth $twitter
      */
-    public function __construct(TwitterOAuth $twitter, EventDispatcherInterface $eventDispatcher)
+    public function __construct(EventDispatcherInterface $eventDispatcher, TwitterOAuth $twitter)
     {
+        parent::__construct($eventDispatcher);
         $this->twitter = $twitter;
-        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -45,7 +40,7 @@ class TwitterController
     public function authenticate(Request $request): Response
     {
         try {
-            $requestBody = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
+            $requestBody = $this->getRequestBody($request);
 
             if (!array_key_exists('oauth_token', $requestBody)) {
 
@@ -69,7 +64,7 @@ class TwitterController
 
             $loginEvent = new TwitterUserLoggedIn();
 
-            $this->eventDispatcher->dispatch($loginEvent);
+            $this->dispatch($loginEvent);
 
             if (!$loginEvent->getAuthResponse()) {
                 throw new RuntimeException('User data could not be fetched!');

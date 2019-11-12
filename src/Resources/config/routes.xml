@@ -5,6 +5,16 @@
         http://symfony.com/schema/routing/routing-1.0.xsd">
 
     <route id="eos_vue_authenticate_twitter"
+           controller="Eos\Bundle\VueAuthenticate\Controller\InternalUserController::login"
+           methods="POST"
+           path="/auth/login"/>
+
+    <route id="eos_vue_authenticate_twitter"
+           controller="Eos\Bundle\VueAuthenticate\Controller\InternalUserController::register"
+           methods="POST"
+           path="/auth/register"/>
+
+    <route id="eos_vue_authenticate_twitter"
            controller="Eos\Bundle\VueAuthenticate\Controller\TwitterController::authenticate"
            methods="POST"
            path="/auth/twitter"/>

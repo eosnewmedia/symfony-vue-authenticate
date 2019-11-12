@@ -12,8 +12,19 @@ use Throwable;
 /**
  * @author Philipp Marien <marien@eosnewmedia.de>
  */
-class TwitterController extends AbstractAuthController
+class TwitterController
 {
+    /**
+     * @var string
+     */
+    private $consumerKey;
+
+    /**
+     * @var string
+     */
+    private $consumerSecret;
+
+
     /**
      * @param Request $request
      * @return Response
@@ -22,15 +33,24 @@ class TwitterController extends AbstractAuthController
     public function authenticate(Request $request): Response
     {
         if (!$request->request->has('oauth_token')) {
-            $oauth = new TwitterOAuth('', '');
-            $response = $oauth->oauth('oauth/request_token', ['oauth_callback' => '']);
+            $oauth = new TwitterOAuth($this->consumerKey, $this->consumerSecret);
+            $response = $oauth->oauth(
+                'oauth/request_token',
+                ['oauth_callback' => $request->request->get('redirectUri')]
+            );
 
-            return new JsonResponse([
-                'oauth_token' => $response['oauth_token'],
-                'oauth_token_secret' => $response['oauth_token_secret'],
-                'oauth_callback_confirmed' => $response['oauth_callback_confirmed'],
-            ]);
+            return new JsonResponse($response);
         }
 
+        $oauth = new TwitterOAuth($this->consumerKey, $this->consumerSecret);
+        $response = $oauth->oauth(
+            'oauth/access_token',
+            [
+                'oauth_token' => $request->request->get('oauth_token'),
+                'oauth_verifier' => $request->request->get('oauth_verifier'),
+            ]
+        );
+
+        return new JsonResponse($response);
     }
 }

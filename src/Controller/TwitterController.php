@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace Eos\Bundle\VueAuthenticate\Controller;
 
 use Abraham\TwitterOAuth\TwitterOAuth;
+use Eos\Bundle\VueAuthenticate\Model\Event\TwitterUserLoggedIn;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,15 +17,24 @@ use Throwable;
 class TwitterController
 {
     /**
-     * @var string
+     * @var TwitterOAuth
      */
-    private $consumerKey;
+    private $twitter;
 
     /**
-     * @var string
+     * @var EventDispatcherInterface
      */
-    private $consumerSecret;
+    private $eventDispatcher;
 
+    /**
+     * @param TwitterOAuth $twitter
+     * @param EventDispatcherInterface $eventDispatcher
+     */
+    public function __construct(TwitterOAuth $twitter, EventDispatcherInterface $eventDispatcher)
+    {
+        $this->twitter = $twitter;
+        $this->eventDispatcher = $eventDispatcher;
+    }
 
     /**
      * @param Request $request
@@ -32,25 +43,32 @@ class TwitterController
      */
     public function authenticate(Request $request): Response
     {
-        if (!$request->request->has('oauth_token')) {
-            $oauth = new TwitterOAuth($this->consumerKey, $this->consumerSecret);
-            $response = $oauth->oauth(
+        $requestBody = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
+
+        if (!array_key_exists('oauth_token', $requestBody)) {
+
+            $response = $this->twitter->oauth(
                 'oauth/request_token',
-                ['oauth_callback' => $request->request->get('redirectUri')]
+                ['oauth_callback' => $requestBody['redirectUri']]
             );
 
             return new JsonResponse($response);
         }
 
-        $oauth = new TwitterOAuth($this->consumerKey, $this->consumerSecret);
-        $response = $oauth->oauth(
+        $response = $this->twitter->oauth(
             'oauth/access_token',
             [
-                'oauth_token' => $request->request->get('oauth_token'),
-                'oauth_verifier' => $request->request->get('oauth_verifier'),
+                'oauth_token' => $requestBody['oauth_token'],
+                'oauth_verifier' => $requestBody['oauth_verifier'],
             ]
         );
 
-        return new JsonResponse($response);
+        $this->twitter->setOauthToken($response['oauth_token'], $response['oauth_token_secret']);
+
+        $loginEvent = new TwitterUserLoggedIn();
+        $this->eventDispatcher->dispatch($loginEvent);
+
+        return $loginEvent->getAuthResponse() !== null ?
+            new JsonResponse($loginEvent->getAuthResponse()) : new JsonResponse(null, Response::HTTP_UNAUTHORIZED);
     }
 }

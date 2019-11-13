@@ -45,6 +45,8 @@ class EosVueAuthenticateExtension extends ConfigurableExtension
             && $mergedConfig['google']['secret']
         ) {
             $container->autowire(GoogleController::class)
+                ->setArgument('$clientId', $mergedConfig['google']['key'])
+                ->setArgument('$clientSecret', $mergedConfig['google']['secret'])
                 ->setPublic(true);
         }
 
@@ -54,6 +56,8 @@ class EosVueAuthenticateExtension extends ConfigurableExtension
             && $mergedConfig['facebook']['secret']
         ) {
             $container->autowire(FacebookController::class)
+                ->setArgument('$clientId', $mergedConfig['facebook']['key'])
+                ->setArgument('$clientSecret', $mergedConfig['facebook']['secret'])
                 ->setPublic(true);
         }
     }

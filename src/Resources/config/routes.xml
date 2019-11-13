@@ -24,7 +24,7 @@
            methods="POST"
            path="/auth/google"/>
 
-    <route id="eos_vue_authenticate_google"
+    <route id="eos_vue_authenticate_facebook"
            controller="Eos\Bundle\VueAuthenticate\Controller\FacebookController::authenticate"
            methods="POST"
            path="/auth/facebook"/>

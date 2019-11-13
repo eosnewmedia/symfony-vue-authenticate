@@ -4,31 +4,32 @@ declare(strict_types=1);
 namespace Eos\Bundle\VueAuthenticate\Model\Event;
 
 use Psr\EventDispatcher\StoppableEventInterface;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @author Philipp Marien <marien@eosnewmedia.de>
  */
-abstract class AbstractAuthResponseEvent implements StoppableEventInterface
+abstract class AbstractResponseEvent implements StoppableEventInterface
 {
     /**
-     * @var array|null
+     * @var Response|null
      */
-    private $authResponse;
+    private $response;
 
     /**
-     * @param array|null $authResponse
+     * @param Response $response
      */
-    public function setAuthResponse(array $authResponse): void
+    public function setResponse(Response $response): void
     {
-        $this->authResponse = $authResponse;
+        $this->response = $response;
     }
 
     /**
-     * @return array|null
+     * @return Response|null
      */
-    public function getAuthResponse(): ?array
+    public function getResponse(): ?Response
     {
-        return $this->authResponse;
+        return $this->response;
     }
 
     /**
@@ -43,6 +44,6 @@ abstract class AbstractAuthResponseEvent implements StoppableEventInterface
      */
     public function isPropagationStopped(): bool
     {
-        return $this->authResponse !== null;
+        return $this->response !== null;
     }
 }

@@ -6,26 +6,26 @@ namespace Eos\Bundle\VueAuthenticate\Model\Event;
 /**
  * @author Philipp Marien <marien@eosnewmedia.de>
  */
-class AbstractInternalUserEvent extends AbstractAuthResponseEvent
+class AbstractInternalUserEvent extends AbstractResponseEvent
 {
     /**
      * @var array
      */
-    private $request;
+    private $requestBody;
 
     /**
-     * @param array $request
+     * @param array $requestBody
      */
-    public function __construct(array $request)
+    public function __construct(array $requestBody)
     {
-        $this->request = $request;
+        $this->requestBody = $requestBody;
     }
 
     /**
      * @return array
      */
-    public function getRequest(): array
+    public function getRequestBody(): array
     {
-        return $this->request;
+        return $this->requestBody;
     }
 }

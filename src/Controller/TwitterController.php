@@ -9,7 +9,6 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use RuntimeException;
 use Throwable;
 
 /**
@@ -62,17 +61,9 @@ class TwitterController extends AbstractAuthenticationController
 
             $this->twitter->setOauthToken($response['oauth_token'], $response['oauth_token_secret']);
 
-            $loginEvent = new TwitterUserLoggedIn();
-
-            $this->dispatch($loginEvent);
-
-            if (!$loginEvent->getAuthResponse()) {
-                throw new RuntimeException('User data could not be fetched!');
-            }
-
-            return new JsonResponse($loginEvent->getAuthResponse());
+            return $this->createEventResponse(new TwitterUserLoggedIn());
         } catch (Throwable $e) {
-            return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_UNAUTHORIZED);
+            return $this->createErrorResponse($e);
         }
     }
 }

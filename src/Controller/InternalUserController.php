@@ -5,10 +5,8 @@ namespace Eos\Bundle\VueAuthenticate\Controller;
 
 use Eos\Bundle\VueAuthenticate\Model\Event\UserLogsIn;
 use Eos\Bundle\VueAuthenticate\Model\Event\UserRegisters;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use RuntimeException;
 use Throwable;
 
 /**
@@ -23,17 +21,11 @@ class InternalUserController extends AbstractAuthenticationController
     public function login(Request $request): Response
     {
         try {
-            $loginEvent = new UserLogsIn($this->getRequestBody($request));
-
-            $this->dispatch($loginEvent);
-
-            if (!$loginEvent->getAuthResponse()) {
-                throw new RuntimeException('User failed to log in!');
-            }
-
-            return new JsonResponse($loginEvent->getAuthResponse());
+            return $this->createEventResponse(
+                new UserLogsIn($this->getRequestBody($request))
+            );
         } catch (Throwable $e) {
-            return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_UNAUTHORIZED);
+            return $this->createErrorResponse($e);
         }
     }
 
@@ -44,17 +36,12 @@ class InternalUserController extends AbstractAuthenticationController
     public function register(Request $request): Response
     {
         try {
-            $registrationEvent = new UserRegisters($this->getRequestBody($request));
-
-            $this->dispatch($registrationEvent);
-
-            if (!$registrationEvent->getAuthResponse()) {
-                throw new RuntimeException('User registration failed!');
-            }
-
-            return new JsonResponse($registrationEvent->getAuthResponse());
+            return $this->createEventResponse(
+                new UserRegisters($this->getRequestBody($request)),
+                'User registration failed!'
+            );
         } catch (Throwable $e) {
-            return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+            return $this->createErrorResponse($e, Response::HTTP_BAD_REQUEST);
         }
     }
 }

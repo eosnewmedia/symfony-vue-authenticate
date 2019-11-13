@@ -22,7 +22,7 @@ class GoogleController extends AbstractOAuthController
         try {
             $requestBody = $this->getRequestBody($request);
 
-            $this->sendOAuthRequest(
+            $response = $this->sendOAuthRequest(
                 $this->createUri('https://accounts.google.com/o/oauth2/token'),
                 [
                     'code' => $requestBody['code'],
@@ -31,9 +31,12 @@ class GoogleController extends AbstractOAuthController
                 ]
             );
 
-            //@todo
             return $this->createEventResponse(
-                new GoogleUserLoggedIn()
+                new GoogleUserLoggedIn(
+                    $response['access_token'],
+                    $response['expires_in'],
+                    $response['id_token']
+                )
             );
         } catch (Throwable $e) {
             return $this->createErrorResponse($e);

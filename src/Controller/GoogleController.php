@@ -11,7 +11,7 @@ use Throwable;
 /**
  * @author Philipp Marien <marien@eosnewmedia.de>
  */
-class GoogleController extends AbstractAuthenticationController
+class GoogleController extends AbstractOAuthController
 {
     /**
      * @param Request $request
@@ -20,6 +20,17 @@ class GoogleController extends AbstractAuthenticationController
     public function authenticate(Request $request): Response
     {
         try {
+            $requestBody = $this->getRequestBody($request);
+
+            $this->sendOAuthRequest(
+                $this->createUri('https://accounts.google.com/o/oauth2/token'),
+                [
+                    'code' => $requestBody['code'],
+                    'redirect_uri' => $requestBody['redirectUri'],
+                    'grant_type' => 'authorization_code'
+                ]
+            );
+
             //@todo
             return $this->createEventResponse(
                 new GoogleUserLoggedIn()

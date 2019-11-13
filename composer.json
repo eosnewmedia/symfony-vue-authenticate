@@ -7,7 +7,10 @@
     "ext-json": "*",
     "symfony/framework-bundle": "^4.0",
     "abraham/twitteroauth": "^1.0",
-    "psr/event-dispatcher": "^1.0"
+    "psr/event-dispatcher": "^1.0",
+    "psr/http-client": "^1.0",
+    "psr/http-message": "^1.0",
+    "psr/http-factory": "^1.0"
   },
   "autoload": {
     "psr-4": {

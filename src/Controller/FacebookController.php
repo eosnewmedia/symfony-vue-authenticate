@@ -11,7 +11,7 @@ use Throwable;
 /**
  * @author Philipp Marien <marien@eosnewmedia.de>
  */
-class FacebookController extends AbstractAuthenticationController
+class FacebookController extends AbstractOAuthController
 {
     /**
      * @param Request $request
@@ -20,7 +20,17 @@ class FacebookController extends AbstractAuthenticationController
     public function authenticate(Request $request): Response
     {
         try {
-            //@todo
+            $requestBody = $this->getRequestBody($request);
+
+            $this->sendOAuthRequest(
+                $this->createUri('https://graph.facebook.com/v2.4/oauth/access_token'),
+                [
+                    'code' => $requestBody['code'],
+                    'redirect_uri' => $requestBody['redirectUri']
+                ],
+                true
+            );
+
             return $this->createEventResponse(
                 new FacebookUserLoggedIn()
             );

@@ -23,6 +23,14 @@ class Configuration implements ConfigurationInterface
         $twitter->scalarNode('key')->defaultNull();
         $twitter->scalarNode('secret')->defaultNull();
 
+        $google = $root->arrayNode('google')->children();
+        $google->scalarNode('key')->defaultNull();
+        $google->scalarNode('secret')->defaultNull();
+
+        $facebook = $root->arrayNode('facebook')->children();
+        $facebook->scalarNode('key')->defaultNull();
+        $facebook->scalarNode('secret')->defaultNull();
+
         return $treeBuilder;
     }
 }

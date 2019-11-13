@@ -39,10 +39,22 @@ class EosVueAuthenticateExtension extends ConfigurableExtension
                 ->setPublic(true);
         }
 
-        $container->autowire(GoogleController::class)
-            ->setPublic(true);
+        if (
+            array_key_exists('google', $mergedConfig)
+            && $mergedConfig['google']['key']
+            && $mergedConfig['google']['secret']
+        ) {
+            $container->autowire(GoogleController::class)
+                ->setPublic(true);
+        }
 
-        $container->autowire(FacebookController::class)
-            ->setPublic(true);
+        if (
+            array_key_exists('facebook', $mergedConfig)
+            && $mergedConfig['facebook']['key']
+            && $mergedConfig['facebook']['secret']
+        ) {
+            $container->autowire(FacebookController::class)
+                ->setPublic(true);
+        }
     }
 }

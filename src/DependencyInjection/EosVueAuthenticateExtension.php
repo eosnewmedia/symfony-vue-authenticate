@@ -4,6 +4,9 @@ declare(strict_types=1);
 namespace Eos\Bundle\VueAuthenticate\DependencyInjection;
 
 use Abraham\TwitterOAuth\TwitterOAuth;
+use Eos\Bundle\VueAuthenticate\Controller\FacebookController;
+use Eos\Bundle\VueAuthenticate\Controller\GoogleController;
+use Eos\Bundle\VueAuthenticate\Controller\InternalUserController;
 use Eos\Bundle\VueAuthenticate\Controller\TwitterController;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
@@ -19,6 +22,9 @@ class EosVueAuthenticateExtension extends ConfigurableExtension
      */
     protected function loadInternal(array $mergedConfig, ContainerBuilder $container): void
     {
+        $container->autowire(InternalUserController::class)
+            ->setPublic(true);
+
         if (
             array_key_exists('twitter', $mergedConfig)
             && $mergedConfig['twitter']['key']
@@ -32,5 +38,11 @@ class EosVueAuthenticateExtension extends ConfigurableExtension
             $container->autowire(TwitterController::class)
                 ->setPublic(true);
         }
+
+        $container->autowire(GoogleController::class)
+            ->setPublic(true);
+
+        $container->autowire(FacebookController::class)
+            ->setPublic(true);
     }
 }

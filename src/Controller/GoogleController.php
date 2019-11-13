@@ -28,4 +28,5 @@ class GoogleController extends AbstractAuthenticationController
             return $this->createErrorResponse($e);
         }
     }
+
 }
